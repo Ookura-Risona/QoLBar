@@ -68,7 +68,7 @@ public static class MiscConditionHelpers
 
         if (!ImGui.IsItemHovered()) return;
 
-        var regexInfo = "Failed regex!";
+        var regexInfo = "格式错误！";
         if (reg.Success)
         {
             var min = ParseTime(reg.Groups[1].Value);
@@ -79,12 +79,12 @@ public static class MiscConditionHelpers
             var use4 = min.Item4 >= 0 && max.Item4 >= 0;
             var minStr = $"{(use1 ? min.Item1.ToString() : "X")}{(use2 ? min.Item2.ToString() : "X")}:{(use3 ? min.Item3.ToString() : "X")}{(use4 ? min.Item4.ToString() : "X")}";
             var maxStr = $"{(use1 ? max.Item1.ToString() : "X")}{(use2 ? max.Item2.ToString() : "X")}:{(use3 ? max.Item3.ToString() : "X")}{(use4 ? max.Item4.ToString() : "X")}";
-            regexInfo = $"Minimum: {minStr}\nMaximum: {maxStr} {(minStr == maxStr ? "\nWarning: this will always be true!" : string.Empty)}";
+            regexInfo = $"开始时间: {minStr}\n结束时间: {maxStr} {(minStr == maxStr ? "\n警告：此条件将始终为真！" : string.Empty)}";
         }
 
-        ImGui.SetTooltip("Timespan should be formatted as \"XX:XX-XX:XX\" (24h) and may contain \"X\" wildcards.\n" +
-                         "I.e \"XX:30-XX:10\" will return true for times such as 01:30, 13:54, and 21:09.\n" +
-                         "The minimum time is inclusive, but the maximum is not.\n\n" +
+        ImGui.SetTooltip("时间段格式应为\"XX:XX-XX:XX\"（24小时制），可使用\"X\"作为通配符。\n" +
+                         "例如\"XX:30-XX:10\"将匹配01:30、13:54和21:09等时间。\n" +
+                         "开始时间为闭区间（包含），结束时间为开区间（不包含）。\n\n" +
                          regexInfo);
     }
 
@@ -107,15 +107,15 @@ public static class MiscConditionHelpers
             QoLBar.Config.Save();
         }
 
-        ImGui.SetTooltip("See \"/xldata ai\" to find the names of various windows.\n" +
-                         "Right click to set this to the currently focused UI addon's name.");
+        ImGui.SetTooltip("使用\"/xldata ai\"命令可查看各种窗口的名称。\n" +
+                         "右键点击可将此设置为当前焦点界面的名称。");
     }
 }
 
 [AttributeUsage(AttributeTargets.Class)]
 public class MiscConditionAttribute : Attribute, IConditionCategory
 {
-    public string CategoryName => "Misc";
+    public string CategoryName => "其他条件";
     public int DisplayPriority => 100;
 }
 
@@ -123,7 +123,7 @@ public class MiscConditionAttribute : Attribute, IConditionCategory
 public class LoggedInCondition : ICondition
 {
     public string ID => "l";
-    public string ConditionName => "Is Logged In";
+    public string ConditionName => "已登录";
     public int DisplayPriority => 0;
     public bool Check(dynamic arg) => DalamudApi.ClientState.IsLoggedIn;
 }
@@ -132,25 +132,25 @@ public class LoggedInCondition : ICondition
 public class CharacterCondition : ICondition, IDrawableCondition, IArgCondition, IOnImportCondition
 {
     public string ID => "c";
-    public string ConditionName => "Character ID";
+    public string ConditionName => "角色ID";
     public int DisplayPriority => 0;
     public bool Check(dynamic arg) => (ulong)arg == DalamudApi.ClientState.LocalContentId;
     public string GetTooltip(CndCfg cndCfg) => $"ID: {cndCfg.Arg}";
-    public string GetSelectableTooltip(CndCfg cndCfg) => "Selecting this will assign the current character's ID to this condition.";
+    public string GetSelectableTooltip(CndCfg cndCfg) => "选择此条件将分配当前角色的ID。";
     public void Draw(CndCfg cndCfg)
     {
         if (cndCfg.Arg != 0)
         {
-            if (ImGui.Button("Clear Data"))
+            if (ImGui.Button("清除数据"))
                 cndCfg.Arg = 0;
         }
         else
         {
-            if (ImGui.Button("Assign Data"))
+            if (ImGui.Button("分配数据"))
                 cndCfg.Arg = GetDefaultArg(cndCfg);
         }
 
-        ImGuiEx.SetItemTooltip("If this condition has no data when imported,\nit will automatically be assigned.");
+        ImGuiEx.SetItemTooltip("导入时若此条件无数据，\n将自动分配当前角色ID。");
     }
     public dynamic GetDefaultArg(CndCfg cndCfg) => DalamudApi.ClientState.LocalContentId;
     public void OnImport(CndCfg cndCfg)
@@ -164,7 +164,7 @@ public class CharacterCondition : ICondition, IDrawableCondition, IArgCondition,
 public class TargetCondition : ICondition, IDrawableCondition, IArgCondition
 {
     public string ID => "t";
-    public string ConditionName => "Target Exists";
+    public string ConditionName => "目标存在";
     public int DisplayPriority => 0;
     public bool Check(dynamic arg)
     {
@@ -181,7 +181,7 @@ public class TargetCondition : ICondition, IDrawableCondition, IArgCondition
     public void Draw(CndCfg cndCfg)
     {
         var _ = (int)cndCfg.Arg;
-        if (ImGui.Combo("##TargetType", ref _, "Target\0Focus Target\0Soft Target\0"))
+        if (ImGui.Combo("##TargetType", ref _, "目标\0焦点目标\0软目标\0"))
             cndCfg.Arg = _;
     }
     public dynamic GetDefaultArg(CndCfg cndCfg) => 0;
@@ -191,7 +191,7 @@ public class TargetCondition : ICondition, IDrawableCondition, IArgCondition
 public class WeaponDrawnCondition : ICondition
 {
     public string ID => "wd";
-    public string ConditionName => "Weapon Drawn";
+    public string ConditionName => "武器已拔出";
     public int DisplayPriority => 0;
     public bool Check(dynamic arg) => DalamudApi.ClientState.LocalPlayer is { } player && (player.StatusFlags & StatusFlags.WeaponOut) != 0;
 }
@@ -200,7 +200,7 @@ public class WeaponDrawnCondition : ICondition
 public class EorzeaTimespanCondition : ICondition, IDrawableCondition, IArgCondition
 {
     public string ID => "et";
-    public string ConditionName => "Eorzea Timespan";
+    public string ConditionName => "艾欧泽亚时间段";
     public int DisplayPriority => 0;
     private static bool CheckEorzeaTimeCondition(string arg)
     {
@@ -218,7 +218,7 @@ public class EorzeaTimespanCondition : ICondition, IDrawableCondition, IArgCondi
 public class LocalTimespanCondition : ICondition, IDrawableCondition, IArgCondition
 {
     public string ID => "lt";
-    public string ConditionName => "Local Timespan";
+    public string ConditionName => "本地时间段";
     public int DisplayPriority => 0;
     private static bool CheckLocalTimeCondition(string arg)
     {
@@ -236,7 +236,7 @@ public class LocalTimespanCondition : ICondition, IDrawableCondition, IArgCondit
 public class HUDLayoutCondition : ICondition, IDrawableCondition, IArgCondition
 {
     public string ID => "hl";
-    public string ConditionName => "Current HUD Layout";
+    public string ConditionName => "当前HUD布局";
     public int DisplayPriority => 0;
     public bool Check(dynamic arg) => (byte)arg == Game.CurrentHUDLayout;
     public string GetTooltip(CndCfg cndCfg) => null;
@@ -254,7 +254,7 @@ public class HUDLayoutCondition : ICondition, IDrawableCondition, IArgCondition
 public class KeyHeldCondition : ICondition, IDrawableCondition
 {
     public string ID => "k";
-    public string ConditionName => "Key Held";
+    public string ConditionName => "按键按下";
     public int DisplayPriority => 0;
     public bool Check(dynamic arg) => Keybind.IsHotkeyHeld((int)arg, false);
     public string GetTooltip(CndCfg cndCfg) => null;
@@ -264,7 +264,7 @@ public class KeyHeldCondition : ICondition, IDrawableCondition
         var _ = (int)cndCfg.Arg;
         if (Keybind.InputHotkey("##KeyHeldCondition", ref _))
             cndCfg.Arg = _;
-        ImGuiEx.SetItemTooltip("Press escape to clear the hotkey.");
+        ImGuiEx.SetItemTooltip("按ESC键清除快捷键。");
     }
 }
 
@@ -272,10 +272,10 @@ public class KeyHeldCondition : ICondition, IDrawableCondition
 public class PartyCondition : ICondition, IDrawableCondition, IArgCondition
 {
     public string ID => "pt";
-    public string ConditionName => "# Party Member Exists";
+    public string ConditionName => "# 小队成员数量";
     public int DisplayPriority => 0;
     public unsafe bool Check(dynamic arg) => Framework.Instance()->GetUIModule()->GetPronounModule()->ResolvePlaceholder($"<{arg}>", 0, 0) != null;
-    public string GetTooltip(CndCfg cndCfg) => "This will only return true if the party member exists in the current area.";
+    public string GetTooltip(CndCfg cndCfg) => "仅当小队成员在当前区域存在时返回真值";
     public string GetSelectableTooltip(CndCfg cndCfg) => null;
     public void Draw(CndCfg cndCfg)
     {
@@ -290,7 +290,7 @@ public class PartyCondition : ICondition, IDrawableCondition, IArgCondition
 public class PetCondition : ICondition
 {
     public string ID => "pe";
-    public string ConditionName => "Pet Exists";
+    public string ConditionName => "宠物存在";
     public int DisplayPriority => 0;
     public unsafe bool Check(dynamic arg) => Framework.Instance()->GetUIModule()->GetPronounModule()->ResolvePlaceholder("<pet>", 0, 0) != null;
 }
@@ -299,7 +299,7 @@ public class PetCondition : ICondition
 public class ChocoboCondition : ICondition
 {
     public string ID => "ce";
-    public string ConditionName => "Chocobo Exists";
+    public string ConditionName => "陆行鸟存在";
     public int DisplayPriority => 0;
     public unsafe bool Check(dynamic arg) => Framework.Instance()->GetUIModule()->GetPronounModule()->ResolvePlaceholder("<c>", 0, 0) != null;
 }
@@ -308,11 +308,11 @@ public class ChocoboCondition : ICondition
 public class SanctuaryCondition : ICondition, IDrawableCondition
 {
     public string ID => "is";
-    public string ConditionName => "In Sanctuary";
+    public string ConditionName => "在安全区";
     public int DisplayPriority => 0;
     public unsafe bool Check(dynamic arg) => FFXIVClientStructs.FFXIV.Client.Game.UI.TerritoryInfo.Instance()->InSanctuary;
     public string GetTooltip(CndCfg cndCfg) => null;
-    public string GetSelectableTooltip(CndCfg cndCfg) => "This refers to areas that accumulate rested experience.";
+    public string GetSelectableTooltip(CndCfg cndCfg) => "指可积累休息经验值的区域";
     public void Draw(CndCfg cndCfg) { }
 }
 
@@ -320,7 +320,7 @@ public class SanctuaryCondition : ICondition, IDrawableCondition
 public class ExplorerModeCondition : ICondition
 {
     public string ID => "em";
-    public string ConditionName => "In Explorer Mode";
+    public string ConditionName => "在探索模式";
     public int DisplayPriority => 0;
     public bool Check(dynamic arg) => Game.IsInExplorerMode;
 }
@@ -329,11 +329,11 @@ public class ExplorerModeCondition : ICondition
 public class AddonExistsCondition : ICondition, IDrawableCondition, IArgCondition
 {
     public string ID => "ae";
-    public string ConditionName => "Addon Exists";
+    public string ConditionName => "界面存在";
     public int DisplayPriority => 100;
     public unsafe bool Check(dynamic arg) => arg is string addon && Game.GetAddonStructByName(addon, 1) != null;
     public string GetTooltip(CndCfg cndCfg) => null;
-    public string GetSelectableTooltip(CndCfg cndCfg) => "Advanced condition.";
+    public string GetSelectableTooltip(CndCfg cndCfg) => "高级条件";
     public void Draw(CndCfg cndCfg) => MiscConditionHelpers.DrawAddonInput(cndCfg);
     public dynamic GetDefaultArg(CndCfg cndCfg) => cndCfg.Arg is string ? cndCfg.Arg : string.Empty;
 }
@@ -342,11 +342,11 @@ public class AddonExistsCondition : ICondition, IDrawableCondition, IArgConditio
 public class AddonVisibleCondition : ICondition, IDrawableCondition, IArgCondition
 {
     public string ID => "av";
-    public string ConditionName => "Addon Visible";
+    public string ConditionName => "界面可见";
     public int DisplayPriority => 101;
     public unsafe bool Check(dynamic arg) => arg is string addon && Game.GetAddonStructByName(addon, 1) is var atkBase && atkBase != null && atkBase->IsVisible;
     public string GetTooltip(CndCfg cndCfg) => null;
-    public string GetSelectableTooltip(CndCfg cndCfg) => "Advanced condition.";
+    public string GetSelectableTooltip(CndCfg cndCfg) => "高级条件";
     public void Draw(CndCfg cndCfg) => MiscConditionHelpers.DrawAddonInput(cndCfg);
     public dynamic GetDefaultArg(CndCfg cndCfg) => cndCfg.Arg is string ? cndCfg.Arg : string.Empty;
 }
@@ -355,7 +355,7 @@ public class AddonVisibleCondition : ICondition, IDrawableCondition, IArgConditi
 public class PluginCondition : ICondition, IDrawableCondition, IArgCondition
 {
     public string ID => "p";
-    public string ConditionName => "Plugin Enabled";
+    public string ConditionName => "插件启用";
     public int DisplayPriority => 102;
     public bool Check(dynamic arg) => arg is string plugin && QoLBar.HasPlugin(plugin);
     public string GetTooltip(CndCfg cndCfg) => null;

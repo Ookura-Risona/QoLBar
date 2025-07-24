@@ -4,7 +4,7 @@ namespace QoLBar.Conditions;
 
 public class CurrentJobPreset : IConditionSetPreset
 {
-    public string Name => "Current Job";
+    public string Name => "当前职业";
     public CndSetCfg Generate()
     {
         var jobRow = DalamudApi.ClientState.LocalPlayer?.ClassJob;
@@ -19,7 +19,7 @@ public class CurrentJobPreset : IConditionSetPreset
 
 public class CurrentRolePreset : IConditionSetPreset
 {
-    public string Name => "Current Role";
+    public string Name => "当前职能";
     public CndSetCfg Generate()
     {
         var jobRow = DalamudApi.ClientState.LocalPlayer?.ClassJob;
@@ -35,10 +35,10 @@ public class CurrentRolePreset : IConditionSetPreset
 
 public class AllCurrentConditionFlagsPreset : IConditionSetPreset
 {
-    public string Name => "All currently active condition flags";
+    public string Name => "所有当前激活的状态标识";
     public CndSetCfg Generate()
     {
-        var set = new CndSetCfg { Name = "Condition Flags Active" };
+        var set = new CndSetCfg { Name = "激活的状态标识" };
 
         for (int i = 0; i < DalamudApi.Condition.MaxEntries; i++)
         {
@@ -52,10 +52,10 @@ public class AllCurrentConditionFlagsPreset : IConditionSetPreset
 
 public class OutOfCombatPreset : IConditionSetPreset
 {
-    public string Name => "Out of Combat";
+    public string Name => "非战斗状态";
     public CndSetCfg Generate()
     {
-        var set = new CndSetCfg { Name = "Out of Combat" };
+        var set = new CndSetCfg { Name = "非战斗状态" };
         set.Conditions.Add(new() { ID = ConditionFlagCondition.constID, Arg = (int)ConditionFlag.InCombat, Negate = true });
         return set;
     }
@@ -63,10 +63,10 @@ public class OutOfCombatPreset : IConditionSetPreset
 
 public class OutofTheWayPreset : IConditionSetPreset
 {
-    public string Name => "Not in most content, cutscenes, or loading";
+    public string Name => "非副本/过场/加载状态";
     public CndSetCfg Generate()
     {
-        var set = new CndSetCfg { Name = "Out of the Way" };
+        var set = new CndSetCfg { Name = "安全区域状态" };
         set.Conditions.Add(new() { ID = ConditionFlagCondition.constID, Arg = (int)ConditionFlag.BoundByDuty, Negate = true });
         set.Conditions.Add(new() { ID = new ZoneCondition().ID, Arg = 732, Operator = ConditionManager.BinaryOperator.OR });
         set.Conditions.Add(new() { ID = new ZoneCondition().ID, Arg = 763, Operator = ConditionManager.BinaryOperator.OR });

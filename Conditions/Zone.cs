@@ -7,7 +7,7 @@ public class ZoneCondition : ICondition, IDrawableCondition, IArgCondition, ICon
 {
     public string ID => "z";
     public string ConditionName => "Zone";
-    public string CategoryName => "Zone";
+    public string CategoryName => "区域";
     public int DisplayPriority => 0;
     public bool Check(dynamic arg) => DalamudApi.ClientState.TerritoryType == (ushort)arg;
     public string GetTooltip(CndCfg cndCfg) => null;

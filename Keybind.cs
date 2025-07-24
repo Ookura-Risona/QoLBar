@@ -422,37 +422,37 @@ public static class Keybind
     public static bool KeybindInput(ShCfg sh)
     {
         var ret = false;
-        if (InputHotkey("Hotkey", ref sh.Hotkey))
+        if (InputHotkey("快捷键", ref sh.Hotkey))
         {
             QoLBar.Config.Save();
             ret = true;
         }
-        ImGuiEx.SetItemTooltip("Press escape to clear the hotkey.");
+        ImGuiEx.SetItemTooltip("按ESC键清除快捷键");
 
         if (sh.Hotkey <= 0) return ret;
 
-        if (ImGui.Checkbox("Pass Input to Game", ref sh.KeyPassthrough))
+        if (ImGui.Checkbox("传递输入到游戏", ref sh.KeyPassthrough))
             QoLBar.Config.Save();
-        ImGuiEx.SetItemTooltip("Disables the hotkey from blocking the game input.");
+        ImGuiEx.SetItemTooltip("禁用快捷键阻止游戏输入");
         return ret;
     }
 
     public static bool KeybindInput(BarCfg bar)
     {
         var ret = false;
-        if (InputHotkey("Pie Hotkey", ref bar.Hotkey))
+        if (InputHotkey("环形菜单快捷键", ref bar.Hotkey))
         {
             QoLBar.Config.Save();
             ret = true;
         }
-        ImGuiEx.SetItemTooltip("Use this to specify a held hotkey to bring the bar up as a pie menu.\n" +
-                               "Press escape to clear the hotkey.");
+        ImGuiEx.SetItemTooltip("指定一个按住的热键将快捷栏显示为环形菜单\n" +
+                               "按ESC键清除快捷键");
         return ret;
     }
 
     public static void DrawDebug()
     {
-        ImGui.TextUnformatted($"Active Hotkeys - {hotkeys.Count}");
+        ImGui.TextUnformatted($"活动快捷键 - {hotkeys.Count}");
         ImGui.Spacing();
         if (hotkeys.Count < 1)
             ImGui.Separator();
@@ -466,7 +466,7 @@ public static class Keybind
 
                 var (_, ui) = hotkeys[i];
                 var sh = ui.Config;
-                if (ImGui.SmallButton("Delete"))
+                if (ImGui.SmallButton("删除"))
                 {
                     sh.Hotkey = 0;
                     sh.KeyPassthrough = false;
@@ -478,7 +478,7 @@ public static class Keybind
                 ImGui.PopFont();
                 if (ImGui.IsItemHovered())
                 {
-                    ImGui.SetTooltip($"Hotkey {(sh.KeyPassthrough ? "doesn't block" : "blocks")} game input.");
+                    ImGui.SetTooltip($"快捷键{(sh.KeyPassthrough ? "不阻止" : "阻止")}游戏输入");
 
                     if (ImGui.IsMouseReleased(ImGuiMouseButton.Left))
                     {
@@ -490,7 +490,7 @@ public static class Keybind
                 ImGui.TextUnformatted(GetKeyName(sh.Hotkey));
                 ImGui.NextColumn();
                 if (sh.Type == ShCfg.ShortcutType.Category)
-                    ImGui.TextUnformatted($"{sh.Mode} {(ui.parent == null ? "Category" : "Subcategory")} \"{sh.Name}\" {(string.IsNullOrEmpty(sh.Command) ? "" : "\n" + sh.Command)}");
+                    ImGui.TextUnformatted($"{sh.Mode} {(ui.parent == null ? "分类" : "子分类")} \"{sh.Name}\" {(string.IsNullOrEmpty(sh.Command) ? "" : "\n" + sh.Command)}");
                 else
                     ImGui.TextUnformatted(sh.Command);
                 ImGui.NextColumn();
@@ -506,11 +506,11 @@ public static class Keybind
 
     private static readonly Dictionary<Keys, string> _keynames = new()
     {
-        [Keys.LButton] = "Mouse 1",
-        [Keys.RButton] = "Mouse 2",
-        [Keys.MButton] = "Mouse 3",
-        [Keys.XButton1] = "Mouse 4",
-        [Keys.XButton2] = "Mouse 5",
+        [Keys.LButton] = "鼠标左键",
+        [Keys.RButton] = "鼠标右键",
+        [Keys.MButton] = "鼠标中键",
+        [Keys.XButton1] = "鼠标侧键1",
+        [Keys.XButton2] = "鼠标侧键2",
         [Keys.ShiftKey] = "Shift",
         [Keys.ControlKey] = "Ctrl",
         [Keys.Menu] = "Alt",

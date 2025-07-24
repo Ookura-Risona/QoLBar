@@ -74,7 +74,7 @@ public class QoLBar : IDalamudPlugin
         }
         catch (Exception e)
         {
-            DalamudApi.LogError($"Failed loading QoLBar!\n{e}");
+            DalamudApi.LogError($"QoLBar加载失败!\n{e}");
         }
     }
 
@@ -91,15 +91,15 @@ public class QoLBar : IDalamudPlugin
     public void ToggleConfig() => ui.ToggleConfig();
 
     [Command("/qolbar")]
-    [HelpMessage("Open the configuration menu.")]
+    [HelpMessage("打开配置菜单")]
     public void ToggleConfig(string command, string argument) => ToggleConfig();
 
     [Command("/qolicons")]
-    [HelpMessage("Open the icon browser.")]
+    [HelpMessage("打开图标浏览器")]
     public void ToggleIconBrowser(string command = null, string argument = null) => IconBrowserUI.ToggleIconBrowser();
 
     [Command("/qolvisible")]
-    [HelpMessage("Hide or reveal a bar using its name or index. Usage: /qolvisible [on|off|toggle] <bar>")]
+    [HelpMessage("使用名称或索引隐藏/显示快捷栏。用法: /qolvisible [on|off|toggle] <栏位>")]
     private void OnQoLVisible(string command, string argument)
     {
         var reg = Regex.Match(argument, @"^(\w+) (.+)");
@@ -134,16 +134,16 @@ public class QoLBar : IDalamudPlugin
                         ui.SetBarHidden(bar, true);
                     break;
                 default:
-                    PrintError("Invalid subcommand.");
+                    PrintError("无效的子命令");
                     break;
             }
         }
         else
-            PrintError("Usage: /qolvisible [on|off|toggle] <bar>");
+            PrintError("用法: /qolvisible [on|off|toggle] <栏位>");
     }
 
     [Command("/performance")]
-    [HelpMessage("Starts playing an instrument.")]
+    [HelpMessage("开始演奏乐器")]
     public void OnPerformance(string command, string argument)
     {
         if (!byte.TryParse(argument, out var b)
@@ -152,7 +152,7 @@ public class QoLBar : IDalamudPlugin
             b = (byte)r.RowId;
 
         if (b == 0)
-            PrintError("Invalid instrument.");
+            PrintError("无效的乐器");
         else
             Game.StartPerformance(b);
     }

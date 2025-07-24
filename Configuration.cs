@@ -223,13 +223,13 @@ public class Configuration : IPluginConfiguration
         {
             if (!failed)
             {
-                DalamudApi.LogError("Failed to save! Retrying...");
+                DalamudApi.LogError("保存失败! 重试中...");
                 Save(true);
             }
             else
             {
-                DalamudApi.LogError("Failed to save again :(");
-                QoLBar.PrintError("Error saving config, is something else writing to it?");
+                DalamudApi.LogError("再次保存失败 :(");
+                QoLBar.PrintError("配置保存出错，是否其他程序正在写入？");
             }
         }
     }
@@ -259,7 +259,7 @@ public class Configuration : IPluginConfiguration
         }
         catch (Exception e)
         {
-            DalamudApi.LogError("Failed to create backup folder", e);
+            DalamudApi.LogError("创建备份目录失败", e);
             return string.Empty;
         }
     }
@@ -272,7 +272,7 @@ public class Configuration : IPluginConfiguration
                 SaveTempConfig();
 
             try { tempConfig.CopyTo(backupFolder.FullName + $"\\v{PluginVersion} {DateTime.Now:yyyy-MM-dd HH.mm.ss}.json"); }
-            catch (Exception e) { DalamudApi.LogError("Failed to back up config!", e); }
+            catch (Exception e) { DalamudApi.LogError("配置备份失败!", e); }
 
             UpdateVersion();
             Save();
@@ -292,7 +292,7 @@ public class Configuration : IPluginConfiguration
                 backupFolder.Create();
             ConfigFile.CopyTo(tempConfig.FullName, true);
         }
-        catch (Exception e) { DalamudApi.LogError("Failed to save temp config!", e); }
+        catch (Exception e) { DalamudApi.LogError("保存临时配置失败!", e); }
     }
 
     public void DoTimedBackup()
@@ -301,7 +301,7 @@ public class Configuration : IPluginConfiguration
 
         SaveTimedConfig();
         lastSave = -1; // Prevent from pointlessly saving if the config is never changed
-        DalamudApi.LogInfo("Performed timed backup!");
+        DalamudApi.LogInfo("已执行定时备份!");
     }
 
     private void SaveTimedConfig()
@@ -312,7 +312,7 @@ public class Configuration : IPluginConfiguration
                 backupFolder.Create();
             ConfigFile.CopyTo(timedConfig.FullName, true);
         }
-        catch (Exception e) { DalamudApi.LogError("Failed to save timed backup!", e); }
+        catch (Exception e) { DalamudApi.LogError("定时备份保存失败!", e); }
     }
 
     public void LoadConfig(FileInfo file)
@@ -324,7 +324,7 @@ public class Configuration : IPluginConfiguration
             file.CopyTo(ConfigFile.FullName, true);
             QoLBar.Plugin.Reload();
         }
-        catch (Exception e) { DalamudApi.LogError("Failed to load config!", e); }
+        catch (Exception e) { DalamudApi.LogError("加载配置失败!", e); }
     }
 
     public void SaveIconCache(HashSet<int> cache)
@@ -350,25 +350,22 @@ public class Configuration : IPluginConfiguration
         var window = ImGuiHelpers.MainViewport.Size;
         ImGui.SetNextWindowPos(new System.Numerics.Vector2(window.X / 2, window.Y / 2), ImGuiCond.Appearing, new System.Numerics.Vector2(0.5f));
         ImGui.SetNextWindowSize(new System.Numerics.Vector2(550, 280) * ImGuiHelpers.GlobalScale);
-        ImGui.Begin("QoL Bar Updated!", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoSavedSettings);
-        ImGui.TextWrapped("QoL Bar has a new feature where categories may now run commands like a normal shortcut, " +
-                          "this may cause problems for people who were using the plugin BEFORE JANUARY 4TH, due to " +
-                          "the command setting being used for tooltips. Please verify that you understand the risks " +
-                          "and that YOU MAY ACCIDENTALLY SEND CHAT MESSAGES WHEN CLICKING CATEGORIES. Additionally, " +
-                          "YOU MAY DELETE ALL COMMANDS FROM ALL CATEGORIES AFTERWARDS if you are worried. Selecting " +
-                          "YES will remove EVERY command from EVERY category in your config, note that this has no " +
-                          "real downside if you have not started to utilize this feature. Selecting NO will close this " +
-                          "popup permanently, you may also change your mind after selecting YES if you restore the " +
-                          "version backup from the config, please be aware that old configs will possibly contain " +
-                          "commands again if you do reload one of them.");
+        ImGui.Begin("QoL Bar 已更新!", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoSavedSettings);
+        ImGui.TextWrapped("QoL Bar 新增功能：分类现在可以像普通快捷方式一样运行命令，" +
+                          "对于在1月4日前使用此插件的用户，这可能导致问题，因为之前" +
+                          "命令设置用于工具提示。请确认您了解风险：点击分类时可能意外发送聊天消息。" +
+                          "此外，如果您担心，后续可以删除所有分类中的命令。选择" +
+                          "【是】将从配置中删除每个分类的所有命令，注意如果您尚未使用此功能，" +
+                          "这没有实际影响。选择【否】将永久关闭此弹窗，选择【是】后如果从配置恢复版本备份，" +
+                          "您仍可改变主意。请注意，旧配置重新加载后可能再次包含命令。");
         ImGui.Spacing();
         ImGui.Spacing();
-        ImGui.Checkbox("I UNDERSTAND", ref updateWindowAgree);
+        ImGui.Checkbox("我理解风险", ref updateWindowAgree);
         if (updateWindowAgree)
         {
             ImGui.Spacing();
             ImGui.Spacing();
-            if (ImGui.Button("YES, DELETE THEM"))
+            if (ImGui.Button("是，删除命令"))
             {
                 static void DeleteRecursive(ShCfg sh)
                 {
@@ -391,7 +388,7 @@ public class Configuration : IPluginConfiguration
                 displayUpdateWindow = false;
             }
             ImGui.SameLine();
-            if (ImGui.Button("NO, I AM FINE"))
+            if (ImGui.Button("否，我已知晓"))
                 displayUpdateWindow = false;
         }
         ImGui.End();

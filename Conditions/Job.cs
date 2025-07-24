@@ -6,7 +6,7 @@ public class JobCondition : ICondition, IDrawableCondition, IArgCondition, ICond
 {
     public string ID => "j";
     public string ConditionName => "Job";
-    public string CategoryName => "Job";
+    public string CategoryName => "职业";
     public int DisplayPriority => 0;
     public bool Check(dynamic arg) => DalamudApi.ClientState.LocalPlayer is { } player && player.ClassJob.RowId == (uint)arg;
     public string GetTooltip(CndCfg cndCfg) => null;
@@ -15,12 +15,12 @@ public class JobCondition : ICondition, IDrawableCondition, IArgCondition, ICond
     {
         var jobs = DalamudApi.DataManager.GetExcelSheet<Lumina.Excel.Sheets.ClassJob>();
         var r = jobs.GetRowOrDefault((uint)cndCfg.Arg);
-        if (!ImGui.BeginCombo("##Job", r?.Abbreviation.ToString())) return;
+        if (!ImGui.BeginCombo("##Job", r?.Name.ToString())) return;
 
         foreach (var j in jobs)
         {
             if (j.RowId == 0) continue;
-            if (!ImGui.Selectable(j.Abbreviation.ToString(), j.RowId == cndCfg.Arg)) continue;
+            if (!ImGui.Selectable(j.Name.ToString(), j.RowId == cndCfg.Arg)) continue;
 
             cndCfg.Arg = j.RowId;
             QoLBar.Config.Save();

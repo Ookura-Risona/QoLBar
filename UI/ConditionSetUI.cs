@@ -36,7 +36,7 @@ public static class ConditionSetUI
 
         if (ImGui.Button(FontAwesomeIcon.Plus.ToIconString(), buttonSize))
         {
-            QoLBar.Config.CndSetCfgs.Add(new() { Name = "New Set" });
+            QoLBar.Config.CndSetCfgs.Add(new() { Name = "新集合" });
             QoLBar.Config.Save();
         }
 
@@ -60,7 +60,7 @@ public static class ConditionSetUI
             ImGui.PopStyleColor(4);
 
         ImGui.PopFont();
-        ImGuiEx.SetItemTooltip(!containsSensitiveInfo ? "Export condition set to clipboard." : "Please enable the \"Allow exporting sensitive condition sets\" setting to export this set.");
+        ImGuiEx.SetItemTooltip(!containsSensitiveInfo ? "导出条件集合到剪贴板。" : "请启用\"允许导出敏感条件集合\"设置以导出此集合。");
         ImGui.PushFont(UiBuilder.IconFont);
 
         ImGui.SameLine();
@@ -84,11 +84,11 @@ public static class ConditionSetUI
             }
             catch (Exception e)
             {
-                QoLBar.PrintError($"Failed to import condition set from clipboard!\n{e.Message}");
+                QoLBar.PrintError($"从剪贴板导入条件集合失败!\n{e.Message}");
             }
         }
         ImGui.PopFont();
-        ImGuiEx.SetItemTooltip("Import condition set from clipboard.");
+        ImGuiEx.SetItemTooltip("从剪贴板导入条件集合。");
         ImGui.PushFont(UiBuilder.IconFont);
 
         ImGui.SameLine();
@@ -136,7 +136,7 @@ public static class ConditionSetUI
 
         ImGui.PopFont();
 
-        ImGuiEx.SetItemTooltip("Double click on a set to edit its name.\n\nAdditionally, you can click this to open Dalamud's debug menu\nto see current Condition Flags.");
+        ImGuiEx.SetItemTooltip("双击集合可编辑名称。\n\n点击此图标可打开Dalamud调试菜单\n查看当前条件标志。");
 
         if (ImGui.IsItemHovered() && ImGui.IsMouseReleased(ImGuiMouseButton.Left))
             Game.ExecuteCommand("/xldata condition");
@@ -227,7 +227,7 @@ public static class ConditionSetUI
                 }
                 catch (Exception e)
                 {
-                    DalamudApi.LogError($"Error while generating set {preset}!\n{e}");
+                    DalamudApi.LogError($"生成预设集合 {preset} 时出错!\n{e}");
                 }
             }
 
@@ -285,7 +285,7 @@ public static class ConditionSetUI
 
             if (ImGui.IsItemHovered())
             {
-                ImGui.SetTooltip("Right click this button to delete this condition!");
+                ImGui.SetTooltip("右键点击此按钮可删除此条件!");
 
                 if (ImGui.IsMouseReleased(ImGuiMouseButton.Right))
                 {
@@ -316,7 +316,7 @@ public static class ConditionSetUI
                 if (debugSteps != null && i < debugSteps.Count)
                 {
                     var setSuccess = debugSteps[i];
-                    operatorTooltip += $"\nSet (Up to this condition): {(setSuccess ? "True" : "False")}";
+                    operatorTooltip += $"\n集合状态(至此条件): {(setSuccess ? "True" : "False")}";
 
                     var setStatusCol = setSuccess ? 0x2000FF00u : 0x200000FFu;
                     ImGui.GetWindowDrawList().AddRectFilled(ImGui.GetItemRectMin(), ImGui.GetItemRectMax(), setStatusCol, ImGui.GetStyle().FrameRounding);
@@ -351,7 +351,7 @@ public static class ConditionSetUI
 
             var notTooltip = "NOT";
             var success = ConditionManager.CheckCondition(cndCfg.ID, cndCfg.Arg, cndCfg.Negate);
-            notTooltip += $"\nCondition: {(success ? "True" : "False")}";
+            notTooltip += $"\n条件状态: {(success ? "True" : "False")}";
 
             var statusCol = success ? 0x2000FF00u : 0x200000FFu;
             ImGui.GetWindowDrawList().AddRectFilled(ImGui.GetItemRectMin(), ImGui.GetItemRectMax(), statusCol, ImGui.GetStyle().FrameRounding);
@@ -407,7 +407,7 @@ public static class ConditionSetUI
                     }
                     catch (Exception e)
                     {
-                        DalamudApi.LogError($"Error while drawing {drawable}!\n{e}");
+                        DalamudApi.LogError($"绘制 {drawable} 时出错!\n{e}");
                     }
                 }
                 else if (ImGui.BeginCombo("##Condition", selectedCondition.ConditionName))
@@ -449,7 +449,7 @@ public static class ConditionSetUI
                 }
                 catch (Exception e)
                 {
-                    DalamudApi.LogError($"Error while drawing {drawable}!\n{e}");
+                    DalamudApi.LogError($"绘制 {drawable} 时出错!\n{e}");
                 }
             }
 
