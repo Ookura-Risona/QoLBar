@@ -152,7 +152,7 @@ public class PluginUI : IDisposable
             ImGui.NextColumn();
 
             if (ImGui.Button("O", letterButtonSize))
-                ImGui.OpenPopup($"快捷栏配置##{i}");
+                ImGui.OpenPopup($"BarConfig##{i}");
             ImGuiEx.SetItemTooltip("选项");
             bars[i].DrawConfig();
             ImGui.SameLine();
